@@ -7,7 +7,12 @@ public enum Methods {
 
     GET_BALANCE("getbalance"),
     GET_BEST_BLOCK_HASH("getbestblockhash"),
-    GET_BLOCK("getblock");
+    GET_BLOCK("getblock"),
+    GET_BLOCK_COUNT("getblockcount"),
+    GET_BLOCK_HASH("getblockhash"),
+    GET_CONNECTION_COUNT("getconnectioncount"),
+    GET_RAW_MEMPOOL("getrawmempool"),
+    GET_RAW_TRANSACTION("getrawtransaction");
 
 
     private String methodName;

@@ -1,25 +1,20 @@
 package com.github.dop89.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dop89.model.GetBalance;
 import com.github.dop89.model.GetBlock;
 import com.github.dop89.model.jsonrpc.JsonRPCRequest;
 import com.github.dop89.model.jsonrpc.JsonRPCResponse;
-import com.github.dop89.model.GetBalance;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-import static com.github.dop89.model.Methods.GET_BALANCE;
-import static com.github.dop89.model.Methods.GET_BEST_BLOCK_HASH;
-import static com.github.dop89.model.Methods.GET_BLOCK;
+import static com.github.dop89.model.Methods.*;
 
 @SuppressWarnings("Duplicates")
 public class NeoClient {
@@ -121,6 +116,122 @@ public class NeoClient {
 
         } catch (IOException ex) {
             System.out.println("Could not get Block for " + blockId);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Gets the number of blocks in the main chain
+     * @return
+     */
+    public JsonRPCResponse<Long> getBlockCount() {
+
+        try {
+
+            JsonRPCRequest getBlockCount = new JsonRPCRequest<String>(GET_BLOCK_COUNT);
+
+
+            Content content = doPostRequest(getBlockCount);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Long>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get block count");
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Returns the hash value of the corresponding block, based on the specified index
+     * @param blockId
+     * @return
+     */
+    public JsonRPCResponse<String> getBlockHash(Long blockId) {
+
+        try {
+
+            JsonRPCRequest getBlockHash = new JsonRPCRequest<Long>(GET_BEST_BLOCK_HASH);
+            getBlockHash.setParams(Collections.singletonList(blockId));
+
+            Content content = doPostRequest(getBlockHash);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get block hash for block " + blockId);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Gets the current number of connections for the node
+     * @return
+     */
+    public JsonRPCResponse<Long> getConnectionCount() {
+
+        try {
+
+            JsonRPCRequest getConnectionCount = new JsonRPCRequest<String>(GET_CONNECTION_COUNT);
+
+            Content content = doPostRequest(getConnectionCount);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Long>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get connection count");
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Obtain the list of unconfirmed transactions in memory
+     * @return
+     */
+    public JsonRPCResponse<String[]> getRawMemPool() {
+
+        try {
+
+            JsonRPCRequest getRawMemPool = new JsonRPCRequest<String>(GET_RAW_MEMPOOL);
+
+            Content content = doPostRequest(getRawMemPool);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String[]>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get unconfirmed transactions");
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Returns the corresponding transaction information, based on the specified hash value
+     * @param transactionId
+     * @return
+     */
+    public JsonRPCResponse<String> getRawTransaction(String transactionId) {
+
+        try {
+
+            JsonRPCRequest getRawTransaction = new JsonRPCRequest<>(GET_RAW_TRANSACTION);
+            getRawTransaction.setParams(Arrays.asList(transactionId, 0L));
+
+
+            Content content = doPostRequest(getRawTransaction);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get raw transaction " + transactionId);
         }
 
 
