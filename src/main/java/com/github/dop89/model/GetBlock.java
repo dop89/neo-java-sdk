@@ -1,8 +1,6 @@
 package com.github.dop89.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.dop89.model.Script;
-import com.github.dop89.model.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;

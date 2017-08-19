@@ -1,7 +1,10 @@
 package com.github.dop89.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dop89.exception.NeoApiException;
+import com.github.dop89.model.Error;
 import com.github.dop89.model.GetBalance;
 import com.github.dop89.model.GetBlock;
 import com.github.dop89.model.jsonrpc.JsonRPCRequest;
@@ -33,17 +36,21 @@ public class NeoClient {
      */
     public JsonRPCResponse<GetBalance> getBalance(String assetId) {
 
+        Content content = null;
+
+        JsonRPCRequest getBalanceRequest = new JsonRPCRequest<String>(GET_BALANCE);
+        getBalanceRequest.setParams(Collections.singletonList(assetId));
+
         try {
-
-            JsonRPCRequest getBalanceRequest = new JsonRPCRequest<String>(GET_BALANCE);
-            getBalanceRequest.setParams(Collections.singletonList(assetId));
-            Content content = doPostRequest(getBalanceRequest);
-
+            content = doPostRequest(getBalanceRequest);
             return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<GetBalance>>() {
             });
 
-        } catch (IOException ex) {
+        }catch (JsonProcessingException e) {
             System.out.println("Could not get Balance for " + assetId);
+            throwException(content);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
         return null;
@@ -57,11 +64,11 @@ public class NeoClient {
      */
     public JsonRPCResponse<String> getBestBlockHash() {
 
+        JsonRPCRequest getBestBlockHash = new JsonRPCRequest<String>(GET_BEST_BLOCK_HASH);
+        Content content;
+
         try {
-
-            JsonRPCRequest getBestBlockHash = new JsonRPCRequest<String>(GET_BEST_BLOCK_HASH);
-            Content content = doPostRequest(getBestBlockHash);
-
+            content = doPostRequest(getBestBlockHash);
             return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String>>() {
             });
 
@@ -75,6 +82,7 @@ public class NeoClient {
     /**
      * Returns the corresponding block information according to the specified index.
      * The serialized information of the block is returned, represented by a hexadecimal string
+     *
      * @param blockId the id of the block
      * @return hex string
      */
@@ -100,6 +108,7 @@ public class NeoClient {
     /**
      * Returns the corresponding block information according to the specified index.
      * Detailed information of the corresponding block in Json format string, is returned.
+     *
      * @param blockId the id of the block
      * @return hex string
      */
@@ -124,6 +133,7 @@ public class NeoClient {
 
     /**
      * Gets the number of blocks in the main chain
+     *
      * @return
      */
     public JsonRPCResponse<Long> getBlockCount() {
@@ -147,6 +157,7 @@ public class NeoClient {
 
     /**
      * Returns the hash value of the corresponding block, based on the specified index
+     *
      * @param blockId
      * @return
      */
@@ -171,6 +182,7 @@ public class NeoClient {
 
     /**
      * Gets the current number of connections for the node
+     *
      * @return
      */
     public JsonRPCResponse<Long> getConnectionCount() {
@@ -193,6 +205,7 @@ public class NeoClient {
 
     /**
      * Obtain the list of unconfirmed transactions in memory
+     *
      * @return
      */
     public JsonRPCResponse<String[]> getRawMemPool() {
@@ -215,6 +228,7 @@ public class NeoClient {
 
     /**
      * Returns the corresponding transaction information, based on the specified hash value
+     *
      * @param transactionId
      * @return
      */
@@ -242,6 +256,20 @@ public class NeoClient {
         return Request.Post(URL)
                 .bodyString(request.toJsonString(), ContentType.APPLICATION_JSON)
                 .execute().returnContent();
+    }
+
+    private void throwException(Content content) {
+        try {
+
+            JsonRPCResponse<Error> error = mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Error>>() {
+            });
+
+            throw new NeoApiException(error.getResult());
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
