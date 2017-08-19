@@ -1,4 +1,4 @@
-package com.github.dop89.model;
+package com.github.dop89.model.jsonrpc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class JsonRPCResponse<T extends JsonRPCMethod> {
+// TODO better typing here (T extends JsonRPCMethod) ...
+public class JsonRPCResponse<T> {
 
 
     @JsonProperty("jsonrpc")
@@ -18,7 +19,6 @@ public class JsonRPCResponse<T extends JsonRPCMethod> {
     private int id;
 
     @JsonProperty("result")
-    private T method;
-
+    private T result;
 
 }

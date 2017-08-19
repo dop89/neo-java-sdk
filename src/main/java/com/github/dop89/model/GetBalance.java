@@ -6,16 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GetBalance implements JsonRPCMethod {
+public class GetBalance {
 
-    @JsonProperty("Balance")
+    @JsonProperty("balance")
     private String balance;
 
-    @JsonProperty("Gas")
+    @JsonProperty("gas")
     private String gas;
 
-    @Override
-    public String getMethod() {
-        return "getbalance";
-    }
 }
