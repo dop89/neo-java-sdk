@@ -3,6 +3,8 @@ package com.github.dop89.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +33,12 @@ public class JsonRPCRequest {
     @JsonProperty("method")
     public String getMethod() {
         return method.getMethod();
+    }
+
+    @JsonIgnore
+    public String toJsonString() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(this);
     }
 
 }
