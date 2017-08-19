@@ -12,6 +12,10 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.github.dop89.model.Methods.GET_BALANCE;
 import static com.github.dop89.model.Methods.GET_BEST_BLOCK_HASH;
@@ -37,10 +41,7 @@ public class NeoClient {
         try {
 
             JsonRPCRequest getBalanceRequest = new JsonRPCRequest<String>(GET_BALANCE);
-            String[] params = {assetId};
-
-            getBalanceRequest.setParams(params);
-
+            getBalanceRequest.setParams(Collections.singletonList(assetId));
             Content content = doPostRequest(getBalanceRequest);
 
             return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<GetBalance>>() {
@@ -64,10 +65,6 @@ public class NeoClient {
         try {
 
             JsonRPCRequest getBestBlockHash = new JsonRPCRequest<String>(GET_BEST_BLOCK_HASH);
-
-            // set empty parameter list
-            getBestBlockHash.setParams(new String[0]);
-
             Content content = doPostRequest(getBestBlockHash);
 
             return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String>>() {
@@ -91,10 +88,7 @@ public class NeoClient {
         try {
 
             JsonRPCRequest getBlock = new JsonRPCRequest<Long>(GET_BLOCK);
-
-            Long[] params = {blockId};
-            getBlock.setParams(params);
-
+            getBlock.setParams(Collections.singletonList(blockId));
             Content content = doPostRequest(getBlock);
 
             return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String>>() {
@@ -119,12 +113,9 @@ public class NeoClient {
         try {
 
             JsonRPCRequest getBlock = new JsonRPCRequest<Long>(GET_BLOCK);
-
-            Long[] params = {blockId, 1L};
-            getBlock.setParams(params);
+            getBlock.setParams(Arrays.asList(blockId, 1L));
 
             Content content = doPostRequest(getBlock);
-
             return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<GetBlock>>() {
             });
 

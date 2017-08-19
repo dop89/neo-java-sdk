@@ -9,6 +9,9 @@ import com.github.dop89.model.Methods;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 public class JsonRPCRequest<T> {
@@ -23,7 +26,7 @@ public class JsonRPCRequest<T> {
     private String method;
 
     @JsonProperty("params")
-    private T [] params;
+    private List<T> params = new ArrayList<>();
 
 
     public JsonRPCRequest(Methods method) {
