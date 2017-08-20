@@ -1,7 +1,5 @@
 package com.github.dop89.client;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dop89.exception.NeoApiException;
@@ -19,18 +17,16 @@ import org.apache.http.entity.ContentType;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 import static com.github.dop89.model.Methods.*;
 
 @SuppressWarnings("Duplicates")
 public class NeoClient {
 
-    private static final String URL = "http://test1.cityofzion.io:8880";
+    private static final String URL = "http://seed1.neo.org:20332";
 
     private ObjectMapper mapper = new ObjectMapper();
-
-
-
 
 
     /**
@@ -60,9 +56,11 @@ public class NeoClient {
      * The serialized information of the block is returned, represented by a hexadecimal string
      *
      * @param blockId the id of the block
-     * @return hex string
+     * @return hex string or null if given blockId is invalid
      */
     public JsonRPCResponse<String> getBlock(Long blockId) {
+
+        Objects.requireNonNull(blockId);
 
         try {
 
@@ -78,7 +76,6 @@ public class NeoClient {
         }
 
         return null;
-
     }
 
     /**
@@ -86,9 +83,11 @@ public class NeoClient {
      * Detailed information of the corresponding block in Json format string, is returned.
      *
      * @param blockId the id of the block
-     * @return hex string
+     * @return block object or null if given blockId is invalid
      */
     public JsonRPCResponse<GetBlock> getBlockVerbose(Long blockId) {
+
+        Objects.requireNonNull(blockId);
 
         try {
 
@@ -103,14 +102,13 @@ public class NeoClient {
             System.out.println("Could not get Block for " + blockId);
         }
 
-
         return null;
     }
 
     /**
      * Gets the number of blocks in the main chain
      *
-     * @return
+     * @return the current block count
      */
     public JsonRPCResponse<Long> getBlockCount() {
 
@@ -127,21 +125,22 @@ public class NeoClient {
             System.out.println("Could not get block count");
         }
 
-
         return null;
     }
 
     /**
      * Returns the hash value of the corresponding block, based on the specified index
      *
-     * @param blockId
-     * @return
+     * @param blockId the blockId for which the blockhash should be retrieved
+     * @return blockhash or null if block with given id does not exist
      */
     public JsonRPCResponse<String> getBlockHash(Long blockId) {
 
+        Objects.requireNonNull(blockId);
+
         try {
 
-            JsonRPCRequest getBlockHash = new JsonRPCRequest<Long>(GET_BEST_BLOCK_HASH);
+            JsonRPCRequest getBlockHash = new JsonRPCRequest<Long>(GET_BLOCK_HASH);
             getBlockHash.setParams(Collections.singletonList(blockId));
 
             Content content = doPostRequest(getBlockHash);
@@ -152,14 +151,13 @@ public class NeoClient {
             System.out.println("Could not get block hash for block " + blockId);
         }
 
-
         return null;
     }
 
     /**
      * Gets the current number of connections for the node
      *
-     * @return
+     * @return number of connections for the node
      */
     public JsonRPCResponse<Long> getConnectionCount() {
 
@@ -175,14 +173,13 @@ public class NeoClient {
             System.out.println("Could not get connection count");
         }
 
-
         return null;
     }
 
     /**
      * Obtain the list of unconfirmed transactions in memory
      *
-     * @return
+     * @return list of unconfirmed transaction in memory
      */
     public JsonRPCResponse<String[]> getRawMemPool() {
 
@@ -198,17 +195,18 @@ public class NeoClient {
             System.out.println("Could not get unconfirmed transactions");
         }
 
-
         return null;
     }
 
     /**
      * Returns the corresponding transaction information, based on the specified hash value
      *
-     * @param transactionId
-     * @return
+     * @param transactionId the transaction id
+     * @return information about the transaction or null if transaction id is invalid
      */
     public JsonRPCResponse<String> getRawTransaction(String transactionId) {
+
+        Objects.requireNonNull(transactionId);
 
         try {
 
@@ -224,17 +222,18 @@ public class NeoClient {
             System.out.println("Could not get raw transaction " + transactionId);
         }
 
-
         return null;
     }
 
     /**
      * Returns the corresponding transaction information, based on the specified hash value
      *
-     * @param transactionId
-     * @return
+     * @param transactionId the transaction id
+     * @return a transaction object or null if transaction id is invalid
      */
     public JsonRPCResponse<Transaction> getRawTransactionVerbose(String transactionId) {
+
+        Objects.requireNonNull(transactionId);
 
         try {
 
@@ -249,17 +248,20 @@ public class NeoClient {
             System.out.println("Could not get raw transaction " + transactionId);
         }
 
-
         return null;
     }
 
     /**
      * Returns the corresponding transaction output information (returned change), based on the specified hash and index
-     * @param transactionId
-     * @param n
-     * @return
+     * @param transactionId the transaction id
+     * @param n index of the transaction output to be obtained in the transaction (starts from 0)
+     *
+     * @return TxOut object or null if any given parameter is invalid
      */
     public JsonRPCResponse<TxOut> getTxOut (String transactionId, Long n) {
+
+        Objects.requireNonNull(transactionId);
+        Objects.requireNonNull(n);
 
         try {
 
@@ -275,10 +277,9 @@ public class NeoClient {
         }
 
         return null;
-
     }
 
-    public void setRawTransaction() {
+    public void sendRawTransaction() {
         throw new RuntimeException("Method not implemented yet");
     }
 
@@ -296,7 +297,7 @@ public class NeoClient {
     public JsonRPCResponse<GetBalance> getBalance(String assetId) {
 
         throw new RuntimeException("Method not implemented yet");
-        
+
 //        Content content = null;
 //
 //        JsonRPCRequest getBalanceRequest = new JsonRPCRequest<String>(GET_BALANCE);
