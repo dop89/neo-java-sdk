@@ -10,9 +10,12 @@ import com.github.dop89.model.GetBalance;
 
 public class Runner {
 
+    private static final String URL = "http://seed1.neo.org:20332";
+
     public static void main (String[] args) {
 
-        NeoClient client = new NeoClient();
+
+        NeoClient client = new NeoClient(URL);
 
         try {
             //JsonRPCResponse<GetBalance> balance = client.getBalance("c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b");

@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 public class NeoClientTest {
 
+    private static final String NEO_URL = "http://seed1.neo.org:20332";
     private static final String VALID_TRANSACTION_ID = "2293aee1ba10bf1efeff20b41cb9e6c4cdc75201804d65853d119d34464f8602";
     private static final String INVALID_TRANSACTION_ID = "anInvalidTransactionId";
     private static final Long VALID_BLOCK_ID = 10000L;
@@ -17,8 +18,12 @@ public class NeoClientTest {
     private static final Long VALID_N = 0L;
     private static final Long INVALID_N = -42L;
 
+    private final NeoClient neoClient = new NeoClient(NEO_URL);
 
-    private final NeoClient neoClient = new NeoClient();
+    @Test(expected = NullPointerException.class)
+    public void constructNeoClient_urlIsNull() {
+        new NeoClient(null);
+    }
 
     @Test
     public void getBestBlockHash_success() {

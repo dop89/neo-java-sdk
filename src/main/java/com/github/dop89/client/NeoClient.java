@@ -24,9 +24,15 @@ import static com.github.dop89.model.Methods.*;
 @SuppressWarnings("Duplicates")
 public class NeoClient {
 
-    private static final String URL = "http://seed1.neo.org:20332";
-
+    private String url;
     private ObjectMapper mapper = new ObjectMapper();
+
+    public NeoClient(String url) {
+
+        Objects.requireNonNull(url);
+
+        this.url = url;
+    }
 
 
     /**
@@ -319,7 +325,7 @@ public class NeoClient {
     }
 
     private Content doPostRequest(JsonRPCRequest request) throws IOException {
-        return Request.Post(URL)
+        return Request.Post(url)
                 .bodyString(request.toJsonString(), ContentType.APPLICATION_JSON)
                 .execute().returnContent();
     }
