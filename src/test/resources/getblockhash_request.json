@@ -1,0 +1,6 @@
+{
+  "jsonrpc": "2.0",
+  "method": "getblockhash",
+  "params": [%s],
+  "id": 1
+}

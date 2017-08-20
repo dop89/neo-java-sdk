@@ -64,7 +64,7 @@ public class NeoClient {
      * @param blockId the id of the block
      * @return hex string or null if given blockId is invalid
      */
-    public JsonRPCResponse<String> getBlock(Long blockId) {
+    public JsonRPCResponse<String> getBlockByIndex(Long blockId) {
 
         Objects.requireNonNull(blockId);
 
@@ -78,7 +78,34 @@ public class NeoClient {
             });
 
         } catch (IOException ex) {
-            System.out.println("Could not get Block for " + blockId);
+            System.out.println("Could not get Block for id " + blockId);
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the corresponding block information according to the specified hash value.
+     * The serialized information of the block is returned, represented by a hexadecimal string
+     *
+     * @param blockHash the hash of the block
+     * @return hex string or null if given blockId is invalid
+     */
+    public JsonRPCResponse<String> getBlockByHash(String blockHash) {
+
+        Objects.requireNonNull(blockHash);
+
+        try {
+
+            JsonRPCRequest getBlock = new JsonRPCRequest<Long>(GET_BLOCK);
+            getBlock.setParams(Collections.singletonList(blockHash));
+            Content content = doPostRequest(getBlock);
+
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<String>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get Block for hash " + blockHash);
         }
 
         return null;
@@ -91,7 +118,7 @@ public class NeoClient {
      * @param blockId the id of the block
      * @return block object or null if given blockId is invalid
      */
-    public JsonRPCResponse<GetBlock> getBlockVerbose(Long blockId) {
+    public JsonRPCResponse<GetBlock> getBlockByIndexVerbose(Long blockId) {
 
         Objects.requireNonNull(blockId);
 
@@ -110,6 +137,34 @@ public class NeoClient {
 
         return null;
     }
+
+    /**
+     * Returns the corresponding block information according to the specified hash value.
+     * Detailed information of the corresponding block in Json format string, is returned.
+     *
+     * @param blockHash the hash of the block
+     * @return block object or null if given blockId is invalid
+     */
+    public JsonRPCResponse<GetBlock> getBlockByHashVerbose(String blockHash) {
+
+        Objects.requireNonNull(blockHash);
+
+        try {
+
+            JsonRPCRequest getBlock = new JsonRPCRequest<Long>(GET_BLOCK);
+            getBlock.setParams(Arrays.asList(blockHash, 1L));
+
+            Content content = doPostRequest(getBlock);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<GetBlock>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get Block for hash " + blockHash);
+        }
+
+        return null;
+    }
+
 
     /**
      * Gets the number of blocks in the main chain

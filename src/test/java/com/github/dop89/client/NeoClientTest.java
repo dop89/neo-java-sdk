@@ -35,7 +35,7 @@ public class NeoClientTest {
 
     @Test
     public void getBlock_success() {
-        JsonRPCResponse<String> block = neoClient.getBlock(VALID_BLOCK_ID);
+        JsonRPCResponse<String> block = neoClient.getBlockByIndex(VALID_BLOCK_ID);
 
         assertNotNull(block);
         assertNotNull(block.getResult());
@@ -43,18 +43,18 @@ public class NeoClientTest {
 
     @Test
     public void getBlock_invalidBlockId() {
-        JsonRPCResponse<String> block = neoClient.getBlock(INVALID_BLOCK_ID);
+        JsonRPCResponse<String> block = neoClient.getBlockByIndex(INVALID_BLOCK_ID);
         assertNull(block);
     }
 
     @Test(expected = NullPointerException.class)
     public void getBlock_blockIdIsNull() throws Exception {
-        neoClient.getBlock(null);
+        neoClient.getBlockByIndex(null);
     }
 
     @Test
     public void getBlockVerbose_success() throws Exception {
-        JsonRPCResponse<GetBlock> block = neoClient.getBlockVerbose(VALID_BLOCK_ID);
+        JsonRPCResponse<GetBlock> block = neoClient.getBlockByIndexVerbose(VALID_BLOCK_ID);
 
         GetBlock theBlock = block.getResult();
 
@@ -65,14 +65,14 @@ public class NeoClientTest {
 
     @Test
     public void getBlockVerbose_invalidBlockId() throws Exception {
-        JsonRPCResponse<GetBlock> block = neoClient.getBlockVerbose(INVALID_BLOCK_ID);
+        JsonRPCResponse<GetBlock> block = neoClient.getBlockByIndexVerbose(INVALID_BLOCK_ID);
 
         assertNull(block);
     }
 
     @Test(expected = NullPointerException.class)
     public void getBlockVerbose_blockIdIsNull() throws Exception {
-        neoClient.getBlockVerbose(null);
+        neoClient.getBlockByIndexVerbose(null);
     }
 
 

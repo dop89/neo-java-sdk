@@ -6,7 +6,6 @@ import com.github.dop89.model.GetBlock;
 import com.github.dop89.model.Transaction;
 import com.github.dop89.model.TxOut;
 import com.github.dop89.model.jsonrpc.JsonRPCResponse;
-import com.github.dop89.model.GetBalance;
 
 public class Runner {
 
@@ -20,8 +19,8 @@ public class Runner {
         try {
             //JsonRPCResponse<GetBalance> balance = client.getBalance("c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b");
             JsonRPCResponse<String> bestBlockHash = client.getBestBlockHash();
-            JsonRPCResponse<String> block = client.getBlock(10000L);
-            JsonRPCResponse<GetBlock> blockVerbose = client.getBlockVerbose(10000L);
+            JsonRPCResponse<String> block = client.getBlockByIndex(10000L);
+            JsonRPCResponse<GetBlock> blockVerbose = client.getBlockByIndexVerbose(10000L);
             JsonRPCResponse<Long> blockCount = client.getBlockCount();
             JsonRPCResponse<String> blockHash = client.getBlockHash(10000L);
             JsonRPCResponse<Long> connectionCount = client.getConnectionCount();

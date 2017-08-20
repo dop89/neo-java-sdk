@@ -1,0 +1,6 @@
+{
+  "jsonrpc": "2.0",
+  "method": "getrawmempool",
+  "params":[],
+  "id": 1
+}

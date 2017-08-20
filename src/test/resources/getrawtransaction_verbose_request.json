@@ -1,0 +1,6 @@
+{
+  "jsonrpc": "2.0",
+  "method": "getrawtransaction",
+  "params": ["%s", %s],
+  "id": 1
+}
