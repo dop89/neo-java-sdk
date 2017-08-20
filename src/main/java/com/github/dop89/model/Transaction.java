@@ -1,10 +1,12 @@
 package com.github.dop89.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Transaction {
 
     @JsonProperty("txid")
@@ -40,4 +42,12 @@ public class Transaction {
     @JsonProperty("nonce")
     private Long nonce;
 
+    @JsonProperty("blockhash")
+    private String blockHash;
+
+    @JsonProperty("confirmations")
+    private Long confirmations;
+
+    @JsonProperty("blocktime")
+    private Long blockTime;
 }

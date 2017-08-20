@@ -12,7 +12,8 @@ public enum Methods {
     GET_BLOCK_HASH("getblockhash"),
     GET_CONNECTION_COUNT("getconnectioncount"),
     GET_RAW_MEMPOOL("getrawmempool"),
-    GET_RAW_TRANSACTION("getrawtransaction");
+    GET_RAW_TRANSACTION("getrawtransaction"),
+    GET_TXOUT("gettxout");
 
 
     private String methodName;

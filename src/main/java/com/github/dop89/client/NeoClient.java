@@ -1,12 +1,15 @@
 package com.github.dop89.client;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dop89.exception.NeoApiException;
-import com.github.dop89.model.Error;
 import com.github.dop89.model.GetBalance;
 import com.github.dop89.model.GetBlock;
+import com.github.dop89.model.Transaction;
+import com.github.dop89.model.TxOut;
+import com.github.dop89.model.jsonrpc.JsonRPCErrorResponse;
 import com.github.dop89.model.jsonrpc.JsonRPCRequest;
 import com.github.dop89.model.jsonrpc.JsonRPCResponse;
 import org.apache.http.client.fluent.Content;
@@ -27,34 +30,7 @@ public class NeoClient {
     private ObjectMapper mapper = new ObjectMapper();
 
 
-    /**
-     * Returns the balance of the corresponding asset in the wallet, based on the specified asset number.
-     * Does not work at the moment
-     *
-     * @param assetId neo asset it
-     * @return balance in neo and gas
-     */
-    public JsonRPCResponse<GetBalance> getBalance(String assetId) {
 
-        Content content = null;
-
-        JsonRPCRequest getBalanceRequest = new JsonRPCRequest<String>(GET_BALANCE);
-        getBalanceRequest.setParams(Collections.singletonList(assetId));
-
-        try {
-            content = doPostRequest(getBalanceRequest);
-            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<GetBalance>>() {
-            });
-
-        }catch (JsonProcessingException e) {
-            System.out.println("Could not get Balance for " + assetId);
-            throwException(content);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
 
 
     /**
@@ -252,6 +228,95 @@ public class NeoClient {
         return null;
     }
 
+    /**
+     * Returns the corresponding transaction information, based on the specified hash value
+     *
+     * @param transactionId
+     * @return
+     */
+    public JsonRPCResponse<Transaction> getRawTransactionVerbose(String transactionId) {
+
+        try {
+
+            JsonRPCRequest getRawTransaction = new JsonRPCRequest<>(GET_RAW_TRANSACTION);
+            getRawTransaction.setParams(Arrays.asList(transactionId, 1L));
+
+            Content content = doPostRequest(getRawTransaction);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Transaction>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get raw transaction " + transactionId);
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Returns the corresponding transaction output information (returned change), based on the specified hash and index
+     * @param transactionId
+     * @param n
+     * @return
+     */
+    public JsonRPCResponse<TxOut> getTxOut (String transactionId, Long n) {
+
+        try {
+
+            JsonRPCRequest getRawTransaction = new JsonRPCRequest<>(GET_TXOUT);
+            getRawTransaction.setParams(Arrays.asList(transactionId, n));
+
+            Content content = doPostRequest(getRawTransaction);
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Transaction>>() {
+            });
+
+        } catch (IOException ex) {
+            System.out.println("Could not get tx out for block " + transactionId);
+        }
+
+        return null;
+
+    }
+
+    public void setRawTransaction() {
+        throw new RuntimeException("Method not implemented yet");
+    }
+
+    public void sendToAddress() {
+        throw new RuntimeException("Method not implemented yet");
+    }
+
+    /**
+     * Returns the balance of the corresponding asset in the wallet, based on the specified asset number.
+     * Does not work at the moment
+     *
+     * @param assetId neo asset it
+     * @return balance in neo and gas
+     */
+    public JsonRPCResponse<GetBalance> getBalance(String assetId) {
+
+        throw new RuntimeException("Method not implemented yet");
+        
+//        Content content = null;
+//
+//        JsonRPCRequest getBalanceRequest = new JsonRPCRequest<String>(GET_BALANCE);
+//        getBalanceRequest.setParams(Collections.singletonList(assetId));
+//
+//        try {
+//            content = doPostRequest(getBalanceRequest);
+//            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<GetBalance>>() {
+//            });
+//
+//        }catch (JsonProcessingException e) {
+//            System.out.println("Could not get Balance for " + assetId);
+//            throwException(content);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//
+//        return null;
+    }
+
     private Content doPostRequest(JsonRPCRequest request) throws IOException {
         return Request.Post(URL)
                 .bodyString(request.toJsonString(), ContentType.APPLICATION_JSON)
@@ -261,11 +326,9 @@ public class NeoClient {
     private void throwException(Content content) {
         try {
 
-            JsonRPCResponse<Error> error = mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Error>>() {
-            });
+          JsonRPCErrorResponse error = mapper.readValue(content.asString(), JsonRPCErrorResponse.class);
 
-            throw new NeoApiException(error.getResult());
-
+          throw new NeoApiException(error.getError());
 
         } catch (IOException e) {
             e.printStackTrace();
