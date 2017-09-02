@@ -2,12 +2,10 @@ package com.github.dop89.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dop89.exception.NeoApiException;
 import com.github.dop89.model.GetBalance;
 import com.github.dop89.model.GetBlock;
 import com.github.dop89.model.Transaction;
 import com.github.dop89.model.TxOut;
-import com.github.dop89.model.jsonrpc.JsonRPCErrorResponse;
 import com.github.dop89.model.jsonrpc.JsonRPCRequest;
 import com.github.dop89.model.jsonrpc.JsonRPCResponse;
 import org.apache.http.client.fluent.Content;
@@ -330,7 +328,7 @@ public class NeoClient {
             getRawTransaction.setParams(Arrays.asList(transactionId, n));
 
             Content content = doPostRequest(getRawTransaction);
-            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<Transaction>>() {
+            return mapper.readValue(content.asString(), new TypeReference<JsonRPCResponse<TxOut>>() {
             });
 
         } catch (IOException ex) {
@@ -383,18 +381,6 @@ public class NeoClient {
         return Request.Post(url)
                 .bodyString(request.toJsonString(), ContentType.APPLICATION_JSON)
                 .execute().returnContent();
-    }
-
-    private void throwException(Content content) {
-        try {
-
-          JsonRPCErrorResponse error = mapper.readValue(content.asString(), JsonRPCErrorResponse.class);
-
-          throw new NeoApiException(error.getError());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

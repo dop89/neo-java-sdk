@@ -10,8 +10,9 @@ import static org.junit.Assert.*;
 
 public class NeoClientTest {
 
-    private static final String NEO_URL = "http://seed1.neo.org:20332";
+    private static final String NEO_URL = "http://test1.cityofzion.io:8880";
     private static final String VALID_TRANSACTION_ID = "2293aee1ba10bf1efeff20b41cb9e6c4cdc75201804d65853d119d34464f8602";
+    private static final String VALID_TRANSACTION_ID_2 = "8aaf766179c07941f24a08157d7e6796e6d4aa999d3eaf83e74024c28d081af0";
     private static final String INVALID_TRANSACTION_ID = "anInvalidTransactionId";
     private static final Long VALID_BLOCK_ID = 10000L;
     private static final Long INVALID_BLOCK_ID = -10000L;
@@ -166,7 +167,7 @@ public class NeoClientTest {
 
     @Test
     public void getTxOut_success() {
-        JsonRPCResponse<TxOut> txOut = neoClient.getTxOut(VALID_TRANSACTION_ID, VALID_N);
+        JsonRPCResponse<TxOut> txOut = neoClient.getTxOut(VALID_TRANSACTION_ID_2, VALID_N);
 
         TxOut tx = txOut.getResult();
 
@@ -186,7 +187,7 @@ public class NeoClientTest {
     public void getTxOut_invalidN() {
         JsonRPCResponse<TxOut> txOut = neoClient.getTxOut(VALID_TRANSACTION_ID, INVALID_N);
 
-        assertNull(txOut);
+        assertNull(txOut.getResult());
     }
 
     @Test(expected = NullPointerException.class)
